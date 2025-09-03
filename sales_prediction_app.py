@@ -90,33 +90,33 @@ st.markdown("A tool to predict grocery sales performance. You can make a single 
 if model is None or scaler is None or model_columns is None:
     st.warning("Application cannot start because the model assets failed to load. Please check the error messages above.")
 else:
-    # Create tabs for different prediction modes.
+    # --- Sidebar for Single Prediction Inputs ---
+    st.sidebar.header("📊 Single Prediction Inputs")
+    
+    st.sidebar.subheader("Product Details")
+    item_weight = st.sidebar.number_input("Item Weight (kg)", min_value=0.1, value=12.5, step=0.1, help="Enter the weight of the product in kilograms.")
+    item_fat_content = st.sidebar.selectbox("Item Fat Content", ['Low Fat', 'Regular', 'Non-Edible'], key='single_fat')
+    item_visibility = st.sidebar.slider("Item Visibility", min_value=0.0, max_value=1.0, value=0.05, step=0.001, format="%.3f", help="The percentage of total display area for the product.")
+    item_mrp = st.sidebar.number_input("Item MRP (Price)", min_value=10.0, value=140.0, step=0.5, help="Maximum Retail Price of the product.")
+    item_type = st.sidebar.selectbox("Item Type", ['Fruits and Vegetables', 'Snack Foods', 'Household', 'Frozen Foods', 'Dairy', 'Canned', 'Baking Goods', 'Health and Hygiene', 'Soft Drinks', 'Meat', 'Breads', 'Hard Drinks', 'Others', 'Starchy Foods', 'Breakfast', 'Seafood'], key='single_type')
+
+    st.sidebar.subheader("Outlet Details")
+    outlet_establishment_year = st.sidebar.slider("Outlet Establishment Year", 1985, 2025, 2002)
+    outlet_size = st.sidebar.selectbox("Outlet Size", ['Medium', 'Small', 'High'], key='single_size')
+    outlet_location_type = st.sidebar.selectbox("Outlet Location Type", ['Tier 1', 'Tier 2', 'Tier 3'], key='single_location')
+    outlet_type = st.sidebar.selectbox("Outlet Type", ['Supermarket Type1', 'Supermarket Type2', 'Supermarket Type3', 'Grocery Store'], key='single_outlet')
+
+
+    # Create tabs for the main page content.
     tab1, tab2 = st.tabs(["📊 Single Prediction", "📂 Batch Prediction"])
 
     # ----------------------------
     # Tab 1: Single Prediction UI
     # ----------------------------
     with tab1:
-        st.header("Enter Item Details for a Single Prediction")
+        st.header("Make a Single Prediction")
+        st.write("Use the input fields in the sidebar to enter the details for a product.")
         
-        # Create a two-column layout for better organization.
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.subheader("Product Details")
-            item_weight = st.number_input("Item Weight (kg)", min_value=0.1, value=12.5, step=0.1, help="Enter the weight of the product in kilograms.")
-            item_fat_content = st.selectbox("Item Fat Content", ['Low Fat', 'Regular', 'Non-Edible'], key='single_fat')
-            item_visibility = st.slider("Item Visibility", min_value=0.0, max_value=1.0, value=0.05, step=0.001, format="%.3f", help="The percentage of total display area for the product.")
-            item_mrp = st.number_input("Item MRP (Price)", min_value=10.0, value=140.0, step=0.5, help="Maximum Retail Price of the product.")
-            item_type = st.selectbox("Item Type", ['Fruits and Vegetables', 'Snack Foods', 'Household', 'Frozen Foods', 'Dairy', 'Canned', 'Baking Goods', 'Health and Hygiene', 'Soft Drinks', 'Meat', 'Breads', 'Hard Drinks', 'Others', 'Starchy Foods', 'Breakfast', 'Seafood'], key='single_type')
-
-        with col2:
-            st.subheader("Outlet Details")
-            outlet_establishment_year = st.slider("Outlet Establishment Year", 1985, 2025, 2002)
-            outlet_size = st.selectbox("Outlet Size", ['Medium', 'Small', 'High'], key='single_size')
-            outlet_location_type = st.selectbox("Outlet Location Type", ['Tier 1', 'Tier 2', 'Tier 3'], key='single_location')
-            outlet_type = st.selectbox("Outlet Type", ['Supermarket Type1', 'Supermarket Type2', 'Supermarket Type3', 'Grocery Store'], key='single_outlet')
-
         # Prediction button and logic.
         if st.button("🚀 Predict Sales Class", type="primary", use_container_width=True):
             input_data = {
@@ -181,3 +181,4 @@ else:
                 st.error(f"An error occurred while processing the file: {e}")
 
 # --- End of App ---
+
