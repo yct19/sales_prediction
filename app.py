@@ -94,8 +94,7 @@ elif page == "📊 Predictor":
         model_names = list(models.keys())
         model_options = [f"{name} (Most Accurate)" if name == "SVM_linear" else name for name in model_names]
         
-        # --- MODIFICATION: Default to the best model ---
-        # Find the index of the best model to set it as the default selection.
+        # Default to the best model
         best_model_index = model_names.index("SVM_linear") if "SVM_linear" in model_names else 0
         selected_option = st.sidebar.selectbox(
             "Choose a model", 
