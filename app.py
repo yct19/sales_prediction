@@ -89,12 +89,19 @@ elif page == "📊 Predictor":
         # --- Sidebar for Inputs ---
         st.sidebar.header("Prediction Inputs")
 
-        # --- NEW: Algorithm Selector ---
+        # --- Algorithm Selector ---
         st.sidebar.subheader("1. Select Algorithm")
         model_names = list(models.keys())
-        # Highlight the best model as requested
         model_options = [f"{name} (Most Accurate)" if name == "SVM_linear" else name for name in model_names]
-        selected_option = st.sidebar.selectbox("Choose a model", model_options, index=model_names.index("SVM_linear"))
+        
+        # --- MODIFICATION: Default to the best model ---
+        # Find the index of the best model to set it as the default selection.
+        best_model_index = model_names.index("SVM_linear") if "SVM_linear" in model_names else 0
+        selected_option = st.sidebar.selectbox(
+            "Choose a model", 
+            model_options, 
+            index=best_model_index
+        )
         
         # Get the original model name from the selected option
         selected_model_name = selected_option.split(" (")[0]
@@ -116,11 +123,8 @@ elif page == "📊 Predictor":
         if st.button("🚀 Predict Sales Class", type="primary", use_container_width=True):
             input_data = pd.DataFrame([{'Item_Weight': item_weight, 'Item_Fat_Content': item_fat_content, 'Item_Visibility': item_visibility, 'Item_Type': item_type, 'Item_MRP': item_mrp, 'Outlet_Establishment_Year': outlet_establishment_year, 'Outlet_Size': outlet_size, 'Outlet_Location_Type': outlet_location_type, 'Outlet_Type': outlet_type}])
             
-            # Select the model to use from the loaded dictionary
             model_to_use = models[selected_model_name]
-            
             prediction = predict(input_data, model_to_use, scaler, model_columns)
-            
             sales_class = prediction[0]
             
             st.subheader("Prediction Result")
@@ -141,14 +145,12 @@ elif page == "📈 Model Comparison":
     st.write("This page compares the performance of all 9 trained models across four key evaluation metrics.")
 
     if performance_metrics is not None:
-        # --- Display the Chart ---
         st.subheader("Performance Metrics Chart")
         st.write("This chart visualizes the accuracy, precision, recall, and F1-score for each model.")
         
         chart_data = performance_metrics[['Accuracy', 'Precision', 'Recall', 'F1']]
         st.bar_chart(chart_data)
 
-        # --- Display the Raw Data Table ---
         st.subheader("Detailed Performance Data")
         st.write("The table below shows the exact scores for each model. As indicated, the **SVM_linear** model achieved the highest accuracy.")
         st.dataframe(performance_metrics)
